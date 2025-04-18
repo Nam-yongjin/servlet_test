@@ -26,10 +26,13 @@ public class CalcServlet extends HttpServlet {
 		request.setCharacterEncoding("utf-8");
 		response.setContentType("text/html;charset=utf-8");
 		PrintWriter pw = response.getWriter();
+		
+		// null값 들어오면 걸러내기 위한 command
 		String command = request.getParameter("command");
 		String won = request.getParameter("won");
 		String operator = request.getParameter("operator");
 		
+		// null값 걸러냄
 		if (command != null && command.equals("calculate")) {
 			String result = calculate(Float.parseFloat(won), operator);
 			pw.print("<html><font size=10>변환결과</font><br>");
