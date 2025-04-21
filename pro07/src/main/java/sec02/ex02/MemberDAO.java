@@ -73,11 +73,12 @@ public class MemberDAO {
 			System.out.println("prepareStatement: " + query);
 			pstmt = con.prepareStatement(query);
 			// 0부터 시작안하고 1부터 시작
-			pstmt.setString(1,id);
-			pstmt.setString(2,pwd);
-			pstmt.setString(3,name);
-			pstmt.setString(4,email);
-			// 작성시간은 없어도됨
+			pstmt.setString(1, id);
+			pstmt.setString(2, pwd);
+			pstmt.setString(3, name);
+			pstmt.setString(4, email);
+			pstmt.executeUpdate();		// select만 execuueQuery() 나머지는 Update
+			// 작성시간은 없어도됨 (자동으로 현재시간 등록)
 			pstmt.close();	// 데이터 추가는 1개시스템만 닫음
 		}catch(Exception e) {
 			e.printStackTrace();
