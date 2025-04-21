@@ -22,7 +22,7 @@ public class MemberDAO {
 			String query = "select * from t_member ";
 			System.out.println(query);
 			pstmt = con.prepareStatement(query);		// 쿼리문을 미리 번역
-			ResultSet rs = pstmt.executeQuery(query);		// sql문으로 회원정보 조회
+			ResultSet rs = pstmt.executeQuery(query);		// sql문으로 회원정보 조회(select문 나머지 executeUpdate())
 			while (rs.next()) {
 				String id = rs.getString("id");			// 조회한 레코드의 각 컬럽값 받아옴
 				String pwd = rs.getString("pwd");

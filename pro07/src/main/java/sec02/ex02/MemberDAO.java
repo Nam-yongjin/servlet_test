@@ -60,5 +60,29 @@ public class MemberDAO {
 		return list;					// 조회한 레코드의 개수만큼 MemberVO 객제를 저장한 ArrayList 반환
 	}
 	
+	public void addMember(MemberVO memberVO) {
+		try {
+			con = dataFactory.getConnection();
+			String id = memberVO.getId();
+			String pwd = memberVO.getPwd();
+			String name = memberVO.getName();
+			String email = memberVO.getEmail();
+			String query = "insert into t_member";	// 데이터 삽입
+			query += " (id,pwd,name,email)";
+			query += " values(?,?,?,?)";
+			System.out.println("prepareStatement: " + query);
+			pstmt = con.prepareStatement(query);
+			// 0부터 시작안하고 1부터 시작
+			pstmt.setString(1,id);
+			pstmt.setString(2,pwd);
+			pstmt.setString(3,name);
+			pstmt.setString(4,email);
+			// 작성시간은 없어도됨
+			pstmt.close();	// 데이터 추가는 1개시스템만 닫음
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
 }
 

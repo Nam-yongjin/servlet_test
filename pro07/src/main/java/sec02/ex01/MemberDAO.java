@@ -19,6 +19,7 @@ public class MemberDAO {
 	private PreparedStatement pstmt;
 	private DataSource dataFactory;
 	
+	// tomcat server의 context.xml에 계정정보 등록해놓음
 	public MemberDAO() {
 		try {
 			Context ctx = new InitialContext();

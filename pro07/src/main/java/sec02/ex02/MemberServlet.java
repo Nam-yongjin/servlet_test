@@ -27,18 +27,20 @@ public class MemberServlet extends HttpServlet {
 	      response.setContentType("text/html;charset=utf-8");
 	      MemberDAO dao=new MemberDAO();
 	      PrintWriter out=response.getWriter();
-	      String command=request.getParameter("command");
+	      String command=request.getParameter("command");	// hidden으로 들어온값
 	      if(command!= null && command.equals("addMember")){
 			 String _id=request.getParameter("id");
 			 String _pwd=request.getParameter("pwd");
 			 String _name=request.getParameter("name");
 			 String _email=request.getParameter("email");
+			 
 			 MemberVO vo=new MemberVO();
 			 vo.setId(_id);
 			 vo.setPwd(_pwd);
 			 vo.setName(_name);
 			 vo.setEmail(_email);
 		     dao.addMember(vo);
+		     
 	      }
 	      
 	     List list=dao.listMembers();
@@ -63,8 +65,6 @@ public class MemberServlet extends HttpServlet {
 	     out.print("<a href='/pro07/memberForm.html'>새 회원 등록하기</a");
 	 }
 	
-	public void addMember(MemberVO memberVO) {
-		
-	}
+	
 	
 }
