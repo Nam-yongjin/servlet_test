@@ -31,14 +31,14 @@ public class ShowMember extends HttpServlet {
 	    isLogon=(Boolean)session.getAttribute("isLogon");
            if(isLogon==true){  // 로그인 상태이면
         	   
+        	   // 로그인된 사용자 ID와 비밀번호를 세션에서 가져옴
         	   id = (String)session.getAttribute("login.id");
                pwd = (String)session.getAttribute("login.pwd");
                
+               // 데이터베이스에서 모든 회원 정보를 가져옵니다.
                MemberDAO dao = new MemberDAO();
                List list = dao.listMembers();
-               
-               request.setAttribute("list", list);
-//      ==     list = (List) request.getAttribute("list");
+               request.setAttribute("list", list); // == list = (List) request.getAttribute("list");
                 	   
         	   
 	      	    out.print("<html><body>");
