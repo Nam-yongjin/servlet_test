@@ -40,6 +40,7 @@ public class EncoderFilter implements Filter {
 		String mesg = " Context  정보:" + context + "\n URI 정보 : " + pathinfo + "\n 물리적 경로:  " + realPath;
 		System.out.println(mesg);
 
+		// 요청필터, 응답필터 따로 만들 수 있음 
 		chain.doFilter(request, response); // 다음 필터로 넘기는 작업을 수행한다. 다음 필터가 없으면 서블릿 수행
 	}
 
