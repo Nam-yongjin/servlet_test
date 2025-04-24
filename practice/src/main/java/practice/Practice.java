@@ -53,9 +53,9 @@ public class Practice extends HttpServlet {
 // 로그인 상태 유지 기능이나 쇼핑몰의 장바구니 담기 기능 등에 주로 사용됨
 
 //
+// JSP(일종의 서브릿) >> Java >> Class >> HTML 로 변환
 //
-//
-//
+// JSP파일이 이유없는 에러 발생시 JSP 맨 위라인을 엔터 쳐서 공백만든후 다시 삭제하고 실행하기
 //
 //
 //
