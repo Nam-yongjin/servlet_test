@@ -28,35 +28,48 @@ public class MemberDAO {
 		}
 	}
 	
-	public List<MemberVO> listMembers() {	// 제네릭<MemberVO> 생략해도됨
-		List<MemberVO> list = new ArrayList<MemberVO>();
+	public List<MemberVO> listMembers(MemberVO memberVO) {	// 제네릭<MemberVO> 생략해도됨
+		List<MemberVO> membersList = new ArrayList<MemberVO>();
+		String _name = memberVO.getName();
 		try {
 			con = dataFactory.getConnection();	// DataSource를 이용해 DB에 연결		
 			String query = "select * from t_member ";
-			System.out.println(query);
-			pstmt = con.prepareStatement(query);		// 쿼리문을 미리 번역
-			ResultSet rs = pstmt.executeQuery(query);		// sql문으로 회원정보 조회
+			
+			
+			if((_name!=null && _name.length()!=0)){
+				 query+=" where name=?";
+				 pstmt = con.prepareStatement(query);  // 해당 이름만 조회
+				 pstmt.setString(1, _name);
+			}else {
+				pstmt = con.prepareStatement(query);   // 모든 회원정보 조회	
+			}
+
+			
+	
+			System.out.println("prepareStatememt: " + query);
+			ResultSet rs = pstmt.executeQuery();
 			while (rs.next()) {
-				String id = rs.getString("id");			// 조회한 레코드의 각 컬럽값 받아옴
+				String id = rs.getString("id");
 				String pwd = rs.getString("pwd");
 				String name = rs.getString("name");
 				String email = rs.getString("email");
 				Date joinDate = rs.getDate("joinDate");
 				MemberVO vo = new MemberVO();
-				vo.setId(id);					// 받아온 컬럼값 MemberVO객체에 설정
+				vo.setId(id);
 				vo.setPwd(pwd);
 				vo.setName(name);
 				vo.setEmail(email);
 				vo.setJoinDate(joinDate);
-				list.add(vo);			// ArrayList에 설정한 MemberVO객체 저장
+				membersList.add(vo);
 			}
+
 			rs.close();
 			pstmt.close();
 			con.close();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return list;					// 조회한 레코드의 개수만큼 MemberVO 객제를 저장한 ArrayList 반환
+		return membersList;					// 조회한 레코드의 개수만큼 MemberVO 객제를 저장한 ArrayList 반환
 	}
 	
 	public void addMember(MemberVO memberVO) {
