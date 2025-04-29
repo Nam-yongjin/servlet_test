@@ -62,8 +62,10 @@ public class Practice extends HttpServlet {
 // 주석 : <%-- 내용 --%>
 //
 //
-//
-//
+// Core 태그 라이브러리 기능 : 자바로 구현한 변수 선언, 조건식 ,반복문 기능등을 태그로 대체함
+// 사용 전 반드시 taglib 디렉티브 태그를 선언해야 함.<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+
+// 
 //
 //
 //
