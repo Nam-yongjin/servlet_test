@@ -1,12 +1,27 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8"%>
-<!DOCTYPE html>
+     import="java.util.*"
+    pageEncoding="UTF-8"
+    isELIgnored="false" %>
+
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<c:set var="contextPath" value="${pageContext.request.contextPath}"  />
+
+<c:url var="url1"  value="/test01/member1.jsp"  >
+  <c:param  name="id" value="hong" />		<%-- url로 가져온 member1의 매개변수 안에 데이터 삽입 --%>
+  <c:param  name="pwd" value="1234" />
+  <c:param  name="name" value="홍길동" />
+  <c:param  name="email" value="hong@test.com" />
+</c:url>
+
 <html>
 <head>
-<meta charset="UTF-8">
-<title>Insert title here</title>
+<meta charset=”UTF-8">
+<title> c:url  태그 실습</title>
 </head>
 <body>
 
+  <%-- <a href='${contextPath }/test01/member1.jsp'>회원정보출력</a> --%>
+  <a href='${url1}'>회원정보출력</a>
+  
 </body>
 </html>

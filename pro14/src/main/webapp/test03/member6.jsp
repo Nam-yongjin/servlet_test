@@ -35,6 +35,8 @@
    </c:forEach>
 <br>
 
+
+
 <c:set var="fruits" value="사과, 파인애플, 바나나, 망고, 귤"  />
 <c:forTokens  var="token" items="${fruits}" delims="," >	<%-- , 를 구분자로 사용하여 토큰으로 나누어 출력 --%>
     ${token} <br> 
