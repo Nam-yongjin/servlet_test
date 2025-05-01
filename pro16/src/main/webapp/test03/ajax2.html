@@ -6,7 +6,7 @@
       function fn_process(){
         $.ajax({
             type:"post",
-            async:false, 
+            async:false, 	// 동기
             url:"http://localhost:8090/pro16/ajaxTest2",  
             dataType:"xml",
             success:function (info,textStatus){

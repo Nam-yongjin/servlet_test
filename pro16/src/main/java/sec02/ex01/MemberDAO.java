@@ -1,12 +1,8 @@
 package sec02.ex01;
 
 import java.sql.Connection;
-import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.naming.Context;
 import javax.naming.InitialContext;
@@ -18,7 +14,7 @@ public class MemberDAO {
 	private DataSource dataFactory;
 
 	public MemberDAO() {
-		try {
+		try {    
 			Context ctx = new InitialContext();
 			Context envContext = (Context) ctx.lookup("java:/comp/env");
 			dataFactory = (DataSource) envContext.lookup("jdbc/oracle");
@@ -27,58 +23,29 @@ public class MemberDAO {
 		}
 	}
 
-	public List listMembers() {
-		List list = new ArrayList();
+	public boolean overlappedID(String id){
+		boolean result = false;
 		try {
 			con = dataFactory.getConnection();
-			String query = "select * from t_member order by joinDate desc ";
-			System.out.println("prepareStatememt: " + query);
-			pstmt = con.prepareStatement(query);
-			ResultSet rs = pstmt.executeQuery();
-			while (rs.next()) {
-				String id = rs.getString("id");
-				String pwd = rs.getString("pwd");
-				String name = rs.getString("name");
-				String email = rs.getString("email");
-				Date joinDate = rs.getDate("joinDate");
-				MemberBean vo = new MemberBean();
-				vo.setId(id);
-				vo.setPwd(pwd);
-				vo.setName(name);
-				vo.setEmail(email);
-				vo.setJoinDate(joinDate);
-				list.add(vo);
-			}
-			rs.close();
-			pstmt.close();
-			con.close();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return list;
-	}
-	
-	public void addMember(MemberBean memberBean) {
-		try {
-			Connection con = dataFactory.getConnection();
-			String id = memberBean.getId();
-			String pwd = memberBean.getPwd();
-			String name = memberBean.getName();
-			String email = memberBean.getEmail();
-			String query = "insert into t_member";
-			query += " (id,pwd,name,email)";
-			query += " values(?,?,?,?)";
+			// decode : 검색해서 1개있으면 참일때 true, 거짓일때 false반환 
+//			String query = "select decode(count(*),1,'true','false') as result from t_member";
+			
+			// db의 기본키는 중복이 될 오류가 발생하지는 않아서 위의 코드도 맞음
+			// id 찾았을때 없으면 false, 있으면 true
+			// false와 true는 문자열형태
+			String query = "select decode(count(*),0,'false','true') as result from t_member";
+			query += " where id=?";
 			System.out.println("prepareStatememt: " + query);
 			pstmt = con.prepareStatement(query);
 			pstmt.setString(1, id);
-			pstmt.setString(2, pwd);
-			pstmt.setString(3, name);
-			pstmt.setString(4, email);
-			pstmt.executeUpdate();
+			ResultSet rs = pstmt.executeQuery();
+			rs.next();
+			// result에 받아온 문자열 형태의 false, true를 boolean로 변환
+			result =Boolean.parseBoolean(rs.getString("result"));
 			pstmt.close();
 		} catch (Exception e) {
 			e.printStackTrace();
-		}
+		}	
+		return result;
 	}
 }
-
