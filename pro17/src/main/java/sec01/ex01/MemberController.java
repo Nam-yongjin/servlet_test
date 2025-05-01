@@ -34,7 +34,8 @@ public class MemberController extends HttpServlet {
 		response.setContentType("text/html;charset=utf-8");	// 한글인코딩
 		
 		List<MemberVO> membersList = memberDAO.listMembers();	// DAO로 받아온 데이터 list형식으로 받음
-		request.setAttribute("membersList", membersList);	// 요청한 데이터 set 저장
+		// 요청해서 받은 memberList 데이터를 같은이름인 "memberList"변수에 set
+		request.setAttribute("membersList", membersList);	
 		// listMembers에 dispatch로 전달
 		RequestDispatcher dispatch = request.getRequestDispatcher("/test01/listMembers.jsp");
 		dispatch.forward(request, response);	// dispatch로 포워딩
