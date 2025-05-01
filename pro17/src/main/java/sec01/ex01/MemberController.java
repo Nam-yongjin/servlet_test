@@ -31,7 +31,7 @@ public class MemberController extends HttpServlet {
 
 	private void doHandle(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		request.setCharacterEncoding("utf-8");
-		response.setContentType("text/html;charset=utf-8");	// 한글처리
+		response.setContentType("text/html;charset=utf-8");	// 한글인코딩
 		
 		List<MemberVO> membersList = memberDAO.listMembers();	// DAO로 받아온 데이터 list형식으로 받음
 		request.setAttribute("membersList", membersList);	// 요청한 데이터 set 저장
