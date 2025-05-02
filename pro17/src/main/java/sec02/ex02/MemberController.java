@@ -1,6 +1,7 @@
 package sec02.ex02;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.List;
 
 import javax.servlet.RequestDispatcher;
@@ -9,6 +10,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
 
 
 @WebServlet("/member/*")
@@ -38,10 +40,26 @@ public class MemberController extends HttpServlet {
 		String action = request.getPathInfo();
 		System.out.println("action:" + action);
 
+		
+		
 		if (action == null || action.equals("/listMembers.do")) {
 			List<MemberVO> membersList = memberDAO.listMembers();
 			request.setAttribute("membersList", membersList);
 			nextPage = "/test03/listMembers.jsp";
+			
+		} else if (action.equals("/checkId.do")){
+			// id 중복체크
+			PrintWriter writer = response.getWriter();
+			String _id = (String) request.getParameter("id");
+			System.out.println("id = " + _id);
+			boolean overlappedID = memberDAO.overlappedID(_id);
+			// ajax에 text 반환
+			if (overlappedID == true) {
+				writer.print("not_usable");
+			} else {
+				writer.print("usable");
+			}
+			return;		// 리턴해야 memberForm으로 복귀함
 			
 		} else if (action.equals("/addMember.do")) {
 			String id = request.getParameter("id");
@@ -50,6 +68,7 @@ public class MemberController extends HttpServlet {
 			String email = request.getParameter("email");
 			MemberVO memberVO = new MemberVO(id, pwd, name, email);
 			memberDAO.addMember(memberVO);
+			
 			request.setAttribute("msg", "addMember");		// 회원가입완료시 msg에 'addMember'문자열을 담아 전송
 			nextPage = "/member/listMembers.do";
 			

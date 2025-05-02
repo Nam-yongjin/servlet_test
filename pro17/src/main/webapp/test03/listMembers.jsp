@@ -18,7 +18,7 @@ request.setCharacterEncoding("UTF-8");
          }
       </script>
    </c:when>
-   <c:when test='${msg=="modified" }'>
+   <c:when test='${msg === "modified" }'>
       <script>
         window.onload=function(){
           alert("회원 정보를 수정했습니다.");
@@ -46,6 +46,7 @@ request.setCharacterEncoding("UTF-8");
        text-align:center;
      }
   </style>  
+  
 </head>
 
 <body>
