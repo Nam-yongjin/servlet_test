@@ -66,7 +66,7 @@ public class Practice extends HttpServlet {
 // 사용 전 반드시 taglib 디렉티브 태그를 선언해야 함.<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
 // 
-//
+// DAO 전에 Service 넣는이유 : 입금, 출금이 하나만 이뤄지고 버그나는것을 방지
 //
 //
 //
