@@ -73,7 +73,7 @@ public class BoardController extends HttpServlet {
 				articleVO.setTitle(title);
 				articleVO.setContent(content);
 				articleVO.setImageFileName(imageFileName);
-				boardService.addArticle(articleVO);
+				boardService.addArticle(articleVO); 
 				
 				nextPage = "/board/listArticles.do";
 				
@@ -125,8 +125,7 @@ public class BoardController extends HttpServlet {
 					System.out.println("파일크기:" + fileItem.getSize() + "bytes");
 					
 					// 익스플로러에선 파일 업로드시 파일 경로 까지 같이 전송되므로 구문 삭제
-					//articleMap.put(fileItem.getFieldName(), fileItem.getName());
-					
+					// articleMap.put(fileItem.getFieldName(), fileItem.getName());
 					if (fileItem.getSize() > 0) {
 						// lastIndexOf( ) : 마지막 문자열의 index를 반환한다. 없으면 -1 반환한다. 
 						int idx = fileItem.getName().lastIndexOf("\\");		// 윈도우
@@ -143,7 +142,7 @@ public class BoardController extends HttpServlet {
 						System.out.println("파일명:" + fileName);
 						articleMap.put(fileItem.getFieldName(), fileName);    
 						
-                    //익스플로러에서 업로드 파일의 경로 
+                    // 익스플로러에서 업로드 파일의 경로 
                     // 경로제거 후 파일명 Map에 추가함
 					File uploadFile = new File(currentDirPath + "\\" + fileName);
 					fileItem.write(uploadFile);
