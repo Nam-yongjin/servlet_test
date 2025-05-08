@@ -1,7 +1,8 @@
-package sec03.brd02;
+package sec03.brd04;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -18,6 +19,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
+import org.apache.commons.io.FileUtils;
 
 //@WebServlet("/board/*")
 public class BoardController extends HttpServlet {
@@ -52,17 +54,18 @@ public class BoardController extends HttpServlet {
 			if (action == null) {
 				articlesList = boardService.listArticles();
 				request.setAttribute("articlesList", articlesList);
-				nextPage = "/board02/listArticles.jsp";
+				nextPage = "/board03/listArticles.jsp";
 				
 			} else if (action.equals("/listArticles.do")) {  // action이 listArticles.do 이면 전체글 조회
 				articlesList = boardService.listArticles();
 				request.setAttribute("articlesList", articlesList);  // 조회한 글목록 articlesList로 바인딩
-				nextPage = "/board02/listArticles.jsp";  // listArticles.jsp로 포워딩
+				nextPage = "/board03/listArticles.jsp";  // listArticles.jsp로 포워딩
 				
 			}else if (action.equals("/articleForm.do")) { // 글쓰기창
-				nextPage = "/board02/articleForm.jsp";
+				nextPage = "/board03/articleForm.jsp";
 				
 			} else if (action.equals("/addArticle.do")) { // 새 글 추가
+				int articleNO = 0;
 				Map<String, String> articleMap = upload(request, response);
 				String title = articleMap.get("title");
 				String content = articleMap.get("content");
@@ -73,14 +76,33 @@ public class BoardController extends HttpServlet {
 				articleVO.setTitle(title);
 				articleVO.setContent(content);
 				articleVO.setImageFileName(imageFileName);
-				boardService.addArticle(articleVO); 
+				articleNO = boardService.addArticle(articleVO); 
 				
-				nextPage = "/board/listArticles.do";
-				
-			}else {
-				nextPage = "/board02/listArticles.jsp";
+				// 첨부파일이 있을때 파일명 겹치는거 방지 >> temp 폴더를 거친 후 번호폴더 생성후 옮김
+				// 한번 더 겹치면 temp에 저장
+				if(imageFileName!=null && imageFileName.length()!=0) {
+				    File srcFile = new File(ARTICLE_IMAGE_REPO +"\\"+"temp"+"\\"+imageFileName);
+				    File destDir = new File(ARTICLE_IMAGE_REPO +"\\"+articleNO);
+				    destDir.mkdirs();
+				    FileUtils.moveFileToDirectory(srcFile, destDir, true);
+				}
+				PrintWriter pw = response.getWriter();
+				pw.print("<script>" 
+				         +"  alert('새글을 추가했습니다.');" 
+						 +" location.href='"+request.getContextPath()+"/board/listArticles.do';"
+				         +"</script>");
 
+				return;
+			}else if(action.equals("/viewArticle.do")){
+				String articleNO = request.getParameter("articleNO");
+				articleVO=boardService.viewArticle(Integer.parseInt(articleNO));
+				request.setAttribute("article",articleVO);
+				nextPage = "/board03/viewArticle.jsp";
+			
+			}else {
+				nextPage = "/board03/listArticles.jsp";
 			}
+
 			
 			RequestDispatcher dispatch = request.getRequestDispatcher(nextPage);
 			dispatch.forward(request, response);
@@ -144,7 +166,7 @@ public class BoardController extends HttpServlet {
 						
                     // 익스플로러에서 업로드 파일의 경로 
                     // 경로제거 후 파일명 Map에 추가함
-					File uploadFile = new File(currentDirPath + "\\" + fileName);
+					File uploadFile = new File(currentDirPath + "\\temp\\" + fileName);
 					fileItem.write(uploadFile);
 
 					} // end if
