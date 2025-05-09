@@ -52,7 +52,7 @@ public class BoardService {
 		articlesMap.put("articlesList", articlesList); 		
 		// 전체 총 글갯수를 articlesMap에 저장
 		articlesMap.put("totArticles", totArticles);    
-//		articlesMap.put("totArticles", 170);  // 보통 글이 100개가 안넘으니 글 갯수를 170개로 하여 테스트용
+		articlesMap.put("totArticles", 170);  // 보통 글이 100개가 안넘으니 글 갯수를 170개로 하여 테스트용
 		return articlesMap;
 	}
 

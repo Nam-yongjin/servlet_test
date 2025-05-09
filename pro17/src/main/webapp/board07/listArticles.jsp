@@ -92,7 +92,6 @@
 								href="${contextPath}/board/listArticles.do?section=${section - 1}&pageNum=${(section - 1) * 10}">
 								pre </a>
 						</c:if>
-
 						<%-- 수정된 부분: pageNum에 올바른 값(절대적인 페이지 번호)을 설정 --%>
 						<%-- 섹션번호*10 까지 네이게이션 생성 예) 2섹션 : 11~20 --%>
 						<c:if
