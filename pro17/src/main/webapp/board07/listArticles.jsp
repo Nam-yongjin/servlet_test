@@ -94,10 +94,29 @@
 						</c:if>
 						<%-- 수정된 부분: pageNum에 올바른 값(절대적인 페이지 번호)을 설정 --%>
 						<%-- 섹션번호*10 까지 네이게이션 생성 예) 2섹션 : 11~20 --%>
-						<c:if
+						
+				<%-- 	<c:if
 							test="${(section - 1) * 10 + page <= (totArticles + 9) / 10}">
 							<a class="no-uline"
 								href="${contextPath}/board/listArticles.do?section=${section}&pageNum=${(section - 1) * 10 + page}">${(section - 1) * 10 + page}</a>
+						</c:if> 
+				--%>
+				
+						<%-- totArticles > 100인 경우에도 클릭한 페이지 번호에 sel-page 클래스를 적용 --%>
+						<c:if
+							test="${(section - 1) * 10 + page <= (totArticles + 9) / 10}">
+							<c:choose>
+								<c:when test="${(section - 1) * 10 + page == pageNum}">
+									<a class="sel-page"
+										href="${contextPath}/board/listArticles.do?section=${section}&pageNum=${(section - 1) * 10 + page}">
+										${(section - 1) * 10 + page} </a>
+								</c:when>
+								<c:otherwise>
+									<a class="no-uline"
+										href="${contextPath}/board/listArticles.do?section=${section}&pageNum=${(section - 1) * 10 + page}">
+										${(section - 1) * 10 + page} </a>
+								</c:otherwise>
+							</c:choose>
 						</c:if>
 						<%-- next : 다음섹션 이동 네비게이션 --%>
 						<c:if test="${totArticles > 100 * section && page == 10}">
@@ -108,12 +127,32 @@
 					</c:forEach>
 				</c:when>
 
-				<c:when test="${totArticles ==100 }">
-					<%-- 등록된 글 개수가 100개인경우 >> 10페이지만 표시 --%>
+			  	<%-- 등록된 글 개수가 100개인경우  10페이지만 표시 --%>
+		<%--	<c:when test="${totArticles ==100 }">	
 					<c:forEach var="page" begin="1" end="10" step="1">
 						<a class="no-uline" href="#">${page } </a>
 					</c:forEach>
+				</c:when> 
+				 --%>
+				 
+				<c:when test="${totArticles == 100}">
+					<%-- totArticles == 100인 경우에도 클릭한 페이지 번호에 sel-page 클래스를 적용 --%>
+					<c:forEach var="page" begin="1" end="10" step="1">
+						<c:choose>
+							<c:when test="${page == pageNum}">
+								<a class="sel-page"
+									href="${contextPath}/board/listArticles.do?section=${section}&pageNum=${page}">
+									${page} </a>
+							</c:when>
+							<c:otherwise>
+								<a class="no-uline"
+									href="${contextPath}/board/listArticles.do?section=${section}&pageNum=${page}">
+									${page} </a>
+							</c:otherwise>
+						</c:choose>
+					</c:forEach>
 				</c:when>
+
 
 				<c:when test="${totArticles< 100 }">
 					<%-- 등록된 글 개수가 100개 미만인 경우 >> 전체글수를 10으로 나누어 1을 더한페이지까지 표시 --%>
