@@ -1,4 +1,4 @@
-package sec03.brd06;
+package sec03.brd08;
 
 import java.io.File;
 import java.io.IOException;
@@ -15,13 +15,14 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.commons.io.FileUtils;
 
-//@WebServlet("/board/*")
+@WebServlet("/board/*")
 public class BoardController extends HttpServlet {
 	private static String ARTICLE_IMAGE_REPO = "C:\\board\\article_image";
 
@@ -46,23 +47,50 @@ public class BoardController extends HttpServlet {
 		request.setCharacterEncoding("utf-8");
 		response.setContentType("text/html; charset=utf-8");
 		
+		HttpSession session;	// 답글에 대한 부모 글번호를 저장하기위해 세션사용
+		
 		String action = request.getPathInfo();
 		System.out.println("action:" + action);
 		
 		try {
 			List<ArticleVO> articlesList = new ArrayList<ArticleVO>();
 			if (action == null) {
-				articlesList = boardService.listArticles();
-				request.setAttribute("articlesList", articlesList);
-				nextPage = "/board05/listArticles.jsp";
+				// 페이지 넘버
+				// section : 100단위(10개게시글 * 10페이지), pageNum : 1페이지단위
+				String _section = request.getParameter("section");
+				String _pageNum = request.getParameter("pageNum");
+				
+				// null값이면 페이지값 1(첫페이지)로 전송
+				int section = Integer.parseInt(((_section == null) ? "1" : _pageNum));
+				int pageNum = Integer.parseInt(((_pageNum == null) ? "1" : _pageNum));
+				Map<String, Integer> pagingMap = new HashMap<String, Integer>();
+				pagingMap.put("section", section);
+				pagingMap.put("pageNum", pageNum);
+				
+				// BoardService에서 생성된 articlesMap에 바인딩한 자료 totalArticles(총 게시글수)와
+				// artticlesList(해당 페이지의 10개 게시글)이 바인딩되어 반환됨
+				Map articlesMap=boardService.listArticles(pagingMap);
+				articlesMap.put("section", section);
+				articlesMap.put("pageNum", pageNum);
+				request.setAttribute("articlesMap", articlesMap);
+				nextPage = "/board07/ listArticles.jsp";
 				
 			} else if (action.equals("/listArticles.do")) {  // action이 listArticles.do 이면 전체글 조회
-				articlesList = boardService.listArticles();
-				request.setAttribute("articlesList", articlesList);  // 조회한 글목록 articlesList로 바인딩
-				nextPage = "/board05/listArticles.jsp";  // listArticles.jsp로 포워딩
-				
+				String _section=request.getParameter("section");
+				String _pageNum=request.getParameter("pageNum");
+				int section = Integer.parseInt(((_section==null)? "1":_section) );
+				int pageNum = Integer.parseInt(((_pageNum==null)? "1":_pageNum));
+				Map pagingMap=new HashMap();
+				pagingMap.put("section", section);
+				pagingMap.put("pageNum", pageNum);
+				Map articlesMap=boardService.listArticles(pagingMap);
+				articlesMap.put("section", section);
+				articlesMap.put("pageNum", pageNum);
+				request.setAttribute("articlesMap", articlesMap);	// 조회한 글목록 articlesMap로 바인딩
+				nextPage = "/board07/listArticles.jsp";		 // listArticles.jsp로 포워딩
+							
 			}else if (action.equals("/articleForm.do")) { // 글쓰기창
-				nextPage = "/board05/articleForm.jsp";
+				nextPage = "/board07/articleForm.jsp";
 				
 			} else if (action.equals("/addArticle.do")) { // 새 글 추가
 				int articleNO = 0;
@@ -97,7 +125,7 @@ public class BoardController extends HttpServlet {
 				String articleNO = request.getParameter("articleNO");
 				articleVO=boardService.viewArticle(Integer.parseInt(articleNO));
 				request.setAttribute("article",articleVO);
-				nextPage = "/board05/viewArticle.jsp";
+				nextPage = "/board07/viewArticle.jsp";
 			
 				// 컨트롤러에서 수정을 요청하면 upload()를 이용해 수정 데이터를 Map으로 가져온다. 
 				// Map의 데이터를 다시 ArticleVO객체의 속성에 저장한 후 SQL문으로 전달하여 수정 데이터를 반영한다. 
@@ -138,7 +166,7 @@ public class BoardController extends HttpServlet {
 				List<Integer> articleNOList = boardService.removeArticle(articleNO);
 				// 삭제된 글들의 이미지 저장폴더들을 삭제
 				for(int _articleNO : articleNOList) {
-					File imgDir = new File(ARTICLE_IMAGE_REPO + "\\" + articleNO);
+					File imgDir = new File(ARTICLE_IMAGE_REPO + "\\" + _articleNO);
 					if(imgDir.exists()) {
 						FileUtils.deleteDirectory(imgDir);
 					}
@@ -148,8 +176,50 @@ public class BoardController extends HttpServlet {
 						+ "/board/listArticles.do';" + "</script>");
 				return;
 
+			}else if (action.equals("/replyForm.do")) {
+				
+				// 답글창요청시 미리 부모 글번호를 parentNO속성으로 세션에 저장
+				// viewArticle.jsp에서 articleNO->parentNO(DOM->script)
+				int parentNO = Integer.parseInt(request.getParameter("parentNO"));
+				session = request.getSession();
+				session.setAttribute("parentNO", parentNO);
+				nextPage = "/board07/replyForm.jsp";
+				
+			}else if (action.equals("/addReply.do")) {
+				
+				// 답글 전송시 세션에 저장된 parentNO를 가져옴
+				session = request.getSession();
+				int parentNO = (Integer) session.getAttribute("parentNO");
+				session.removeAttribute("parentNO");
+				Map<String, String> articleMap = upload(request, response);
+				String title = articleMap.get("title");
+				String content = articleMap.get("content");
+				String imageFileName = articleMap.get("imageFileName");
+				
+				// 답글의 부모 글번호 설정
+				articleVO.setParentNO(parentNO);
+				articleVO.setId("lee");		// 답글 작성자
+				articleVO.setTitle(title);
+				articleVO.setContent(content);
+				articleVO.setImageFileName(imageFileName);
+				
+				// 답글을 테이블에 추가
+				int articleNO = boardService.addReply(articleVO);
+				
+				// 답글에 첨부한 이미지 답글번호폴더에맞게 이동
+				if (imageFileName != null && imageFileName.length() != 0) {
+					File srcFile = new File(ARTICLE_IMAGE_REPO + "\\" + "temp" + "\\" + imageFileName);
+					File destDir = new File(ARTICLE_IMAGE_REPO + "\\" + articleNO);
+					destDir.mkdirs();
+					FileUtils.moveFileToDirectory(srcFile, destDir, true);
+				}
+				PrintWriter pw = response.getWriter();
+				pw.print("<script>" + "  alert('답글을 추가했습니다.');" + " location.href='" + request.getContextPath()
+						+ "/board/viewArticle.do?articleNO=" + articleNO + "';" + "</script>");
+				return;
+
 			}else {
-				nextPage = "/board05/listArticles.jsp";
+				nextPage = "/board07/listArticles.jsp";
 			}
 
 			
