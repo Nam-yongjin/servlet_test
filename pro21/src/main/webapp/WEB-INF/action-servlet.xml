@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans   
+http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+http://www.springframework.org/schema/aop
+http://www.springframework.org/schema/aop/spring-aop-3.0.xsd
+http://www.springframework.org/schema/context
+http://www.springframework.org/schema/context/spring-context-3.0.xsd">
+
+<!-- simpleUrlController라는 이름의 스프링 빈을 등록 -->
+<!-- 실제 클래스는 com.spring.ex01.SimpleUrlController이며, 사용자 정의 컨트롤러 -->
+<!-- 이 클래스는 보통 Controller 인터페이스를 구현하거나 @Controller 역할 >>> Spring이 제공하는 Controller상속 -->
+<bean id="simpleUrlController" class="com.spring.ex01.SimpleUrlController"/>
+
+<!--  SimpleUrlHandlerMapping은 URL을 'Controller' 빈에 매핑하는 역할 -->
+<!-- 이 빈은 사용자가 정의한 URL 요청이 들어오면, 어떤 컨트롤러가 그 요청을 처리할지 결정해줌 -->
+<bean id="urlMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
+
+<!-- mappings는 key-value 형식으로 URL과 컨트롤러를 연결 -->
+    <property  name="mappings">
+      <props>
+      
+      <!-- "/test/index.do" 요청이 들어오면 → simpleUrlController 빈이 해당 요청을 처리 -->
+      <!-- 즉, com.spring.ex01.SimpleUrlController 클래스의 인스턴스가 이 URL을 처리 -->
+        <prop key="/test/index.do">simpleUrlController</prop>
+      </props>
+    </property> 
+     
+<!-- 전체 동작 흐름
+클라이언트가 /test/index.do URL로 요청을 보냄.
+
+SimpleUrlHandlerMapping이 이 URL을 찾아보고, 해당 키에 등록된 simpleUrlController 빈을 찾음.
+
+요청은 com.spring.ex01.SimpleUrlController 클래스의 로직으로 전달되어 처리됨 -->
+
+</bean>
+</beans>
