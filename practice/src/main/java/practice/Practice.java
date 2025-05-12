@@ -70,6 +70,7 @@ public class Practice extends HttpServlet {
 //
 ///////////////////////////////////////////////////////////////
 //	SPRING
+// 의존관계 : 오라클DA를 쓰다가 MYSQL로 바꾸려할때 미리 만들어놓은 코드를 연결만 바꾸는 방식
 // 의존성주입 예시(실제구현x, 하부구조)로 new로 객체화시켜 인스턴스로 만들지 않아도 
 // 미리 xml파일에서 id, class로 불러올 클래스,
 // 생성자방식(constructor-arg) or setter방식(property name)으로 값을 가져온다

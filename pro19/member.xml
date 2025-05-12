@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE beans PUBLIC "-//SPRING//DRD BEAN//EN"
+"http://www.springframework.org/dtd/spring-beans-2.0.dtd"> 
+<beans>
+	<!--  MemberServiceImpl 클래스의 인스턴스를 생성 -->
+	<bean id="memberService" class="com.spring.ex03.MemberServiceImpl">
+	
+		<!--  memberService 빈 안에서 memberDAO라는 property(멤버 변수)에 외부 빈을 주입 -->
+		<!--  ref="memberDAO"는 같은 XML 안에서 정의된 memberDAO 빈을 참조한다는 의미 -->
+		<!--  memberServiceImpl 클래스의 setMemberDAO(MemberDAO memberDAO) 메서드를 통해 의존성 주입이 이루어짐 -->
+		<property name="memberDAO" ref="memberDAO" />
+	</bean>
+	<!-- DAO를 미리 연결 -->
+	<!--  memberDAO라는 이름의 빈을 생성하며, MemberDAOImpl 클래스의 인스턴스 -->
+	<!--  이 객체가 memberService 빈에 주입 -->
+	<bean id="memberDAO" class="com.spring.ex03.MemberDAOImpl"/>
+</beans>

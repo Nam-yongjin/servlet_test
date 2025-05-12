@@ -1,11 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- 파일을 다운받지 않았을때
+
 <!DOCTYPE beans PUBLIC "-//SPRING//DRD BEAN//EN"
-"http://www.springframework.org/dtd/spring-beans-2.0.dtd"> -->
+"http://www.springframework.org/dtd/spring-beans-2.0.dtd"> 
 <beans>
-	<bean id="personService" class="com.spring.ex01.PersonSerciceImpl">
+	<bean id="personService" class="com.spring.ex01.PersonServiceImpl">
 		<property name="name">
 			<value>홍길동</value>
 		</property>
+	</bean>
+	<bean id="personService1" class="com.spring.ex02.PersonServiceImpl">
+		<constructor-arg value="이순신"></constructor-arg>
+	</bean>
+	<bean id="personService2" class="com.spring.ex02.PersonServiceImpl">
+		<constructor-arg value="손흥민"></constructor-arg>
+		<constructor-arg value="23"></constructor-arg>
 	</bean>
 </beans>
