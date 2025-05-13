@@ -11,51 +11,13 @@ http://www.springframework.org/schema/aop/spring-aop-3.0.xsd
 http://www.springframework.org/schema/context
 http://www.springframework.org/schema/context/spring-context-3.0.xsd">
 
-<!-- simpleUrlController라는 이름의 스프링 빈을 등록 -->
-<!-- 실제 클래스는 com.spring.ex01.SimpleUrlController이며, 사용자 정의 컨트롤러 -->
-<!-- 이 클래스는 보통 Controller 인터페이스를 구현하거나 @Controller 역할 >>> Spring이 제공하는 Controller상속 -->
-<bean id="simpleUrlController" class="com.spring.ex01.SimpleUrlController"/>
-
-<!--  SimpleUrlHandlerMapping은 URL을 'Controller' 빈에 매핑하는 역할 -->
-<!-- 이 빈은 사용자가 정의한 URL 요청이 들어오면, 어떤 컨트롤러가 그 요청을 처리할지 결정해줌 -->
-<bean id="urlMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
-
-<!-- mappings는 key-value 형식으로 URL과 컨트롤러를 연결 -->
-    <property  name="mappings">
-      <props>
-      
-      <!-- "/test/index.do" 요청이 들어오면 → simpleUrlController 빈이 해당 요청을 처리 -->
-      <!-- 즉, com.spring.ex01.SimpleUrlController 클래스의 인스턴스가 이 URL을 처리 -->
-        <prop key="/test/index.do">simpleUrlController</prop>
-      </props>
-    </property> 
-     
-<!-- 전체 동작 흐름
-클라이언트가 /test/index.do URL로 요청을 보냄.
-
-SimpleUrlHandlerMapping이 이 URL을 찾아보고, 해당 키에 등록된 simpleUrlController 빈을 찾음.
-
-요청은 com.spring.ex01.SimpleUrlController 클래스의 로직으로 전달되어 처리됨 -->
-
-</bean>
-
-<!-- @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ -->
-
-<!-- 6. setViewName("result") → /test/result.jsp 로 이동 -->
-<!-- JSP 파일의 위치를 지정
-예: mav.setViewName("result")이면 실제로 보여줄 JSP는 /test/result.jsp -->
+    
 <bean id="viewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
 	<property name="viewClass" value="org.springframework.web.servlet.view.JstlView" />
 	<property name="prefix" value="/WEB-INF/views"></property>
 	<property name="suffix" value=".jsp"></property>
 </bean>
 
-<!-- web.xml이 처음시작 -->
-<!-- 0. localhost:8090/pro21/test/loginForm.jsp로 브라우저에 요청 -->
-<!-- 1. 사용자가 userID, passwd 입력 후 /test/login.do로 요청 전송. -->
-<!-- 2. 사용자가 로그인 버튼을 누르면 login.do로 요청 전송됨 -->
-<!-- 3. /test/login.do는 userController라는 빈으로 연결됨 -->
-<!-- /test/*.do 형식의 URL 요청이 들어오면 userController라는 빈(bean)으로 연결 -->
 <bean id="userUrlMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
 	<property name="mappings">
 		<props>
@@ -64,31 +26,23 @@ SimpleUrlHandlerMapping이 이 URL을 찾아보고, 해당 키에 등록된 simp
 	</property>
 </bean>
 
-<!-- UserController 클래스를 사용
-어떤 메서드를 실행할지 결정해주는 methodNameResolver를 설정 -->
 <bean id="memberController" class="com.spring.member.controller.MemberControllerImpl">
-	<property name="methodResolver">
+	<property name="methodNameResolver">
 		<ref local="methodResolver" />
 	</property>
 	<property name="memberService" ref="memberService"/>
 </bean>
 
-<!-- 4. login.do → UserController의 login() 실행 -->
-<!-- 5. UserController.java의 login() 메서드 실행 -->
-<!-- /test/login.do 요청이 오면 UserController 클래스의 login() 메서드를 호출 -->
 <bean id="methodResolver" class="org.springframework.web.servlet.mvc.multiaction.PropertiesMethodNameResolver">
 	<property name="mappings">
 		<props>
-			<prop key="/member/listMembers.do">listMembers</prop> <!-- 메서드명 동일하게 -->
+			<prop key="/member/listMembers.do">listMembers</prop> 
 			<prop key="/member/addMember.do">addMember</prop>
 			<prop key="/member/memberForm.do">memberForm</prop>
 			<prop key="/member/memberDetail.do">memberDetail</prop>
 		</props>
 	</property>
 </bean>
-
-
-
 
 
 </beans>
