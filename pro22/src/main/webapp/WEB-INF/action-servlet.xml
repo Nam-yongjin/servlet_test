@@ -46,7 +46,7 @@ SimpleUrlHandlerMapping이 이 URL을 찾아보고, 해당 키에 등록된 simp
 예: mav.setViewName("result")이면 실제로 보여줄 JSP는 /test/result.jsp -->
 <bean id="viewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
 	<property name="viewClass" value="org.springframework.web.servlet.view.JstlView" />
-	<property name="prefix" value="/test/"></property>
+	<property name="prefix" value="/WEB-INF/views"></property>
 	<property name="suffix" value=".jsp"></property>
 </bean>
 
@@ -59,27 +59,30 @@ SimpleUrlHandlerMapping이 이 URL을 찾아보고, 해당 키에 등록된 simp
 <bean id="userUrlMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
 	<property name="mappings">
 		<props>
-			<prop key="/test/*.do">userController</prop>
+			<prop key="/member/*.do">memberController</prop>
 		</props>
 	</property>
 </bean>
 
 <!-- UserController 클래스를 사용
 어떤 메서드를 실행할지 결정해주는 methodNameResolver를 설정 -->
-<bean id="userController" class="com.spring.ex02.UserController">
-	<property name="methodNameResolver">
-		<ref local="userMethodNameResolver" />
+<bean id="memberController" class="com.spring.member.controller.MemberControllerImpl">
+	<property name="methodResolver">
+		<ref local="methodResolver" />
 	</property>
+	<property name="memberService" ref="memberService"/>
 </bean>
 
 <!-- 4. login.do → UserController의 login() 실행 -->
 <!-- 5. UserController.java의 login() 메서드 실행 -->
 <!-- /test/login.do 요청이 오면 UserController 클래스의 login() 메서드를 호출 -->
-<bean id="userMethodNameResolver" class="org.springframework.web.servlet.mvc.multiaction.PropertiesMethodNameResolver">
+<bean id="methodResolver" class="org.springframework.web.servlet.mvc.multiaction.PropertiesMethodNameResolver">
 	<property name="mappings">
 		<props>
-			<prop key="/test/login.do">login</prop> <!-- 메서드명 동일하게 -->
-			<prop key="/test/memberInfo.do">memberInfo</prop>
+			<prop key="/member/listMembers.do">listMembers</prop> <!-- 메서드명 동일하게 -->
+			<prop key="/member/addMember.do">addMember</prop>
+			<prop key="/member/memberForm.do">memberForm</prop>
+			<prop key="/member/memberDetail.do">memberDetail</prop>
 		</props>
 	</property>
 </bean>
