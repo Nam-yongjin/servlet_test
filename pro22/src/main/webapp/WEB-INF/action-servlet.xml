@@ -39,6 +39,7 @@ http://www.springframework.org/schema/context/spring-context-3.0.xsd">
 			<prop key="/member/listMembers.do">listMembers</prop> 
 			<prop key="/member/addMember.do">addMember</prop>
 			<prop key="/member/memberForm.do">memberForm</prop>
+			<prop key="/member/modmember.do">modMember</prop>
 			<prop key="/member/memberDetail.do">memberDetail</prop>
 		</props>
 	</property>
