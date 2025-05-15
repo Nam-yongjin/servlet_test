@@ -81,4 +81,26 @@ public class MemberDAO {
 	      MemberVO memberVO=session.selectOne("mapper.member.selectMemberById",id);
 	      return memberVO;		
 	}
+	
+	public List searchMember(MemberVO memberVO) {
+		sqlMapper = getInstance();
+		SqlSession session = sqlMapper.openSession();
+		List list = session.selectList("mapper.member.searchMember", memberVO);
+		return list;
+	}
+
+	public List foreachSelect(List nameList) {
+		sqlMapper = getInstance();
+		SqlSession session = sqlMapper.openSession();
+		List list = session.selectList("mapper.member.foreachSelect", nameList);
+		return list;
+	}
+	
+	public int foreachInsert(List memList) {
+		sqlMapper = getInstance();
+		SqlSession session = sqlMapper.openSession();
+		int result = session.insert("mapper.member.foreachInsert", memList);
+		session.commit();
+		return result;
+	}
 }

@@ -22,6 +22,15 @@
 		<result property="joinDate" column="joinDate"></result>
 	</resultMap>
 	
+	<!-- sql태그로 공통으로 자주 사용하는 sql문을 지정하고 include태그를 이용하여 sql문재사용 -->
+	<sql id="a">
+		<![CDATA[
+			select * from t_member
+		]]>
+	</sql>
+	
+	<!-- <include refid="a" /> -->
+	
 	<!-- CDATA : 특수문자 사용가능 -->
 	<select id="selectAllMemberList" resultMap="memResult">
 		<![CDATA[
@@ -55,6 +64,9 @@
 			values(#{id}, #{pwd}, #{name}, #{email})   
 		]]>
 	</insert>
+	
+
+	
 	<!-- HashMap 사용하는 방법 -->
 	<insert id="insertMember2" parameterType="java.util.HashMap">
 		
@@ -78,5 +90,71 @@
 			where id=#{id}
 		]]>
 	</delete>
+	<!-- mybatis 동적 sql문 -->
+<!-- 	
+	<select id="searchMember" parameterType="memberVO" resultMap="memResult">
+		<![CDATA[
+			select * from t_member
+		]]>
+		<where> 
+			<if test="name != '' and name != null">
+				name = #{name}
+			</if>
+			<if test="email != '' and email != null">
+				and email = #{email}
+			</if>
+		</where>
+		order by joinDate desc
+	</select>
+	 -->
+	<select id="searchMember" parameterType="memberVO" resultMap="memResult">
+		<include refid="a" />
+		<where> 
+			<choose>
+				<when test="name != '' and name != null and email != '' and email != null">
+					name = #{name} and email = #{email}
+				</when>
+				<when test="name != '' and name != null">
+					name = #{name}
+				</when>
+				<when test="email != '' and email != null">
+					email = #{email}
+				</when>
+			
+			</choose>
+			
+		</where>
+		order by joinDate desc
+	</select>
+	
+	<!-- 이름을 여러개 add한 이름목록중 있는 이름에 대한 정보 출력 -->
+	<select id="foreachSelect" resultMap="memResult" parameterType="java.util.Map">
+		<include refid="a" />
+		where name in 
+		<foreach item="item" collection="list" open=" (" separator="," close=")">
+			#{item}
+		</foreach>
+		order by joinDate desc
+	</select>
+	
+	<!-- foreach 사용한 insert -->
+	<!-- Oracle은 all 과 dual 넣어야함 -->
+	<insert id="foreachInsert" parameterType="java.util.Map">
+		<foreach item="item" collection="list" open="insert all " separator=" " close=" select * from dual">
+			into t_member(id, pwd, name, email)
+			values(#{item.id}, #{item.pwd}, #{item.name}, #{item.email})
+		</foreach>
+	</insert>
+	
+	<!-- 마이바티스에서 오라클 연동해 like 검색하는 방법
+	 name like '%'#{name}'%' 이렇게 작성하면 오라클은 에러발생
+	 name like '%' || #{name} || '%' -->
+	<select id="selectLike" resultMap="memResult" parameterType="String">
+		<![CDATA[
+			select * from t_member
+			where
+			name like '%' || #{name} || '%'
+		]]>
+	</select>
 	
 </mapper>
