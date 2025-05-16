@@ -14,38 +14,19 @@ http://www.springframework.org/schema/context/spring-context-3.0.xsd">
     
 <bean id="viewResolver"   
        class="org.springframework.web.servlet.view.InternalResourceViewResolver">
-      <property name="viewClass" 
-                          value="org.springframework.web.servlet.view.JstlView"/>
-      <property name="prefix" value="/WEB-INF/views/account/" /> 
+      <property name="viewClass" value="org.springframework.web.servlet.view.JstlView"/>
+      <property name="prefix" value="/WEB-INF/views/test/" /> 
       <property name="suffix" value=".jsp"/>
 </bean>
    
-<bean id="accController" 
-                            class="com.spring.account.AccountController">
-      <property name="methodNameResolver">
-         <ref local="methodResolver"/>
-      </property>
-      <property name="accService" ref="accService"/>
-</bean>
+<!-- 클래스 단위의 @RequestMapping -->
+<bean class="org.springframework.web.servlet.mvc.annotation.DefaultAnnotationHandlerMapping"/>
 
-<bean  id="methodResolver"
-   class="org.springframework.web.servlet.mvc.multiaction.PropertiesMethodNameResolver" >
-      <property  name="mappings" >
-        <props>
-          <prop key="/account/sendMoney.do" >sendMoney</prop>
-       </props>
-      </property>
-</bean>
-   
-  
-<bean id="urlMapping"
-       class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
-      <property name="mappings">
-         <props>
-            <prop key="/account/*.do">accController</prop>
-         </props>
-      </property>
-</bean>
+<!-- 매서드 단위의 @RequestMapping -->
+<bean class="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter"/>
+
+<!-- 해당 패키지에 존재하는 클래스에 애너테이션 적용되도록 설정 -->
+<context:component-scan base-package="com.spring"/>
 
 </beans>
 
