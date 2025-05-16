@@ -66,7 +66,7 @@ public class LoginController {
 		return mav;
 	}
 	
-	// Model 클래스 : ModelAndView보다 최신버전
+	// Model 클래스 : ModelAndView보다 최신버전, 값을 직접넣어줘야할때, MAV리턴이 필요하지 않을때
 //	Model 클래스를 이용하면 메서드 호출 시 JSP로 값을 바로 바인딩하여 전달할 수 있음
 //	Model 클래스의 addAttribute() 메서드는 ModelAndView의 addObject() 메서드와 같은 기능 수행
 //	Model 클래스는 따로 뷰 정보를 전달할 필요가 없을 때 사용하면 편리함
